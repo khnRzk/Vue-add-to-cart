@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Vue.Js</title>
+	<link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+<body>
+	<div class="nav-bar"></div>
+	<div id="app">
+		<div class="product">
+			<div class="product-image">
+				<img :src="image">
+			</div>
+			<div class="product-info">
+				<h1>{{product}}</h1>
+				<p v-show="inStock">In stock</p>
+				<ul>
+					<li v-for="detail in details"> {{ detail }}</li>
+				</ul>
+
+				<div v-for="variant in variants" :key ="variant.variantID" >
+					<p @mouseover="updateProduct(variant.variantImage)">{{variant.variantColor}}</p>
+				</div>
+
+				<h6 style="margin-bottom: 0;">ADD/REMOVE from Cart</h6>
+				<button @click="addToCart">+</button>
+				<button @click="removeFromCart">-</button>
+
+				<div class="cart">
+					<p>Cart ({{ cart }})</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script type="text/javascript">
+	var app = new Vue({
+		el : '#app',
+		data: {
+			product: 'socks',
+			image:'./imgs/vmSocks-green.jpg',
+			inStock: true,
+			details: ['80% Cotton', 'Multi Colours' , 'Imported'],
+			cart : 0,
+			variants: [
+				{
+				variantID: 123457,
+				variantColor :"Green",
+				variantImage: './imgs/vmSocks-green.jpg'
+				},
+				{
+				variantID : 123458,
+				variantColor : "Blue",
+				variantImage : './imgs/vmSocks-blue.jpg'
+				}
+			]
+			
+		},
+		methods: {
+			addToCart: function(){
+				this.cart += 1;
+			},
+			removeFromCart: function () {
+				if(this.cart != 0 ) {
+				this.cart -= 1;
+				}
+			},
+			updateProduct: function(variantImage){
+				this.image = variantImage;
+			}
+		}
+	})
+</script>
+</body>
+</html>
