@@ -11,10 +11,62 @@
 			<p>Cart ({{ cart.length }})</p>
 		</div>	
 		<product :premium="premium" @add-to-cart="updateCart" @remove-to-cart="remCart"></product>
+
 	</div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 <script type="text/javascript">
+	Vue.component('product-reveiw', {
+		template:`
+		<form class="review-form" @submit.prevent="onSubmit">
+			<p>
+				<label for="name">Name:</label>
+				<input id="name" v-model="name" placeholder="name">
+			</p>
+			
+			<p>
+				<label for="review">Review:</label>      
+				<textarea id="review" v-model="review"></textarea>
+			</p>
+			
+			<p>
+				<label for="rating">Rating:</label>
+				<select id="rating" v-model.number="rating">
+				<option>5</option>
+				<option>4</option>
+				<option>3</option>
+				<option>2</option>
+				<option>1</option>
+				</select>
+			</p>
+				
+			<p>
+				<input type="submit" value="Submit">  
+			</p>    
+			
+			</form>
+		`,
+		data (){
+			return {
+				name: null,
+				review: null,
+				rating: null,
+			}
+		},
+		methods: {
+			onSubmit() {
+				let productReview = {
+					name: this.name,
+					review: this.review,
+					rating: this.rating
+				}
+				this.$emit('review-submitted', productReview)
+				this.name = null
+				this.review = null
+				this.rating = null
+			}
+		}
+	})
 
 	Vue.component('product-details', {
 		props: {
@@ -64,6 +116,19 @@
 					:disabled="!inStock"
 					:class="{disabledButton: !inStock}" >-</button>
 			</div>
+
+			<div>
+				<h2>Reviews</h2>
+				<p v-if="!reveiws.length">There are no reviews yet.</p>
+				<ul>
+					<li v-for="reveiw in reveiws">
+						<h5 style="margin:0">{{ reveiw.name }}</h5>
+						<p>{{ reveiw.review }}</P>
+						<small>Rating : {{ reveiw.rating }}</small>
+					</li>
+				</ul>
+			</div>
+			<product-reveiw @review-submitted="addReveiw"></product-reveiw>
 		</div>
 		`,
 		data () {
@@ -86,7 +151,8 @@
 					variantImage : './imgs/vmSocks-blue.jpg',
 					variantQuantity: 0
 					}
-				]
+				],
+				reveiws: []
 			}
 		},	
 		methods: {
@@ -98,7 +164,10 @@
 			},
 			updateProduct: function(index){
 				this.selectedVariant = index;
-			}
+			},
+			addReveiw: function(productReview) {
+				this.reveiws.push(productReview)
+			} 
 		},
 		computed: {
 			title() {
